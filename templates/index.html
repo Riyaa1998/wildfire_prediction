@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Forest Fire Prediction</title>
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='fonts/material-icon/css/material-design-iconic-font.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='vendor/jquery-ui/jquery-ui.min.css')}}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css')}}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+    <!-- Tailwind fullscreen layout -->
+    <div class="min-h-screen w-full bg-cover bg-center relative" style="background-image: url('{{ url_for('static', filename = 'images/form-img.jpg')}}');">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-orange-600/35 via-transparent to-black/40"></div>
+        <!-- Top bar with title and right-aligned nav -->
+        <div class="absolute top-0 left-0 right-0 z-20">
+            <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+                <h1 class="text-white font-extrabold tracking-wide text-lg md:text-2xl drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">FOREST FIRE PREDICTION</h1>
+                <ul class="hidden md:flex items-center space-x-6 text-white font-semibold">
+                    <li><a href="#home" class="hover:text-orange-400">Home</a></li>
+                    <li><a href="#about" class="hover:text-orange-400">About Project</a></li>
+                    <li><a href="#models" class="hover:text-orange-400">Models</a></li>
+                    <li><a href="#contact" class="hover:text-orange-400">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="relative z-10 max-w-3xl mx-auto px-4 py-10 md:py-16 flex flex-col items-stretch space-y-8">
+            <div class="text-center pt-10 md:pt-16">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-wide drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">FOREST FIRE PREDICTION</h1>
+            </div>
+
+            <!-- Classification Card -->
+            <div class="rounded-xl shadow-xl bg-white/10 backdrop-blur border border-white/20 p-6 md:p-8">
+                <h2 class="text-white text-xl md:text-2xl font-bold mb-4">🔥 Fire Prediction (Classification Model)</h2>
+                <form action="{{ url_for('predict')}}" method="POST" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="Temperature" class="text-white/90 text-sm font-medium">Temperature (°C)</label>
+                            <input type="number" id="Temperature" name="Temperature" placeholder="e.g. 25" class="mt-1 w-full rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        </div>
+                        <div>
+                            <label for="Ws" class="text-white/90 text-sm font-medium">Wind Speed (km/h)</label>
+                            <input type="number" id="Ws" name="Ws" placeholder="e.g. 10" class="mt-1 w-full rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        </div>
+                        <div>
+                            <label for="FFMC" class="text-white/90 text-sm font-medium">Fuel Moisture Code (FFMC)</label>
+                            <input type="number" id="FFMC" name="FFMC" placeholder="e.g. 85" class="mt-1 w-full rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        </div>
+                        <div>
+                            <label for="DMC" class="text-white/90 text-sm font-medium">Duff Moisture Code (DMC)</label>
+                            <input type="number" id="DMC" name="DMC" placeholder="e.g. 26" class="mt-1 w-full rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="ISI" class="text-white/90 text-sm font-medium">Initial Spread Index (ISI)</label>
+                            <input type="number" id="ISI" name="ISI" placeholder="e.g. 7" class="mt-1 w-full rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <button type="submit" class="w-full md:w-1/2 mx-auto block bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition">Predict</button>
+                    </div>
+                </form>
+                {% if prediction_text1 %}
+                <div class="mt-4 rounded-md px-4 py-3 text-center font-semibold {% if 'Safe' in prediction_text1 %}bg-green-500/20 text-green-300 border border-green-400/40{% elif 'Danger' in prediction_text1 %}bg-red-500/20 text-red-300 border border-red-400/40{% else %}bg-white/10 text-white border border-white/20{% endif %}">{{ prediction_text1 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Regression Card -->
+            <div class="rounded-xl shadow-xl bg-white/10 backdrop-blur border border-white/20 p-6 md:p-8">
+                <h2 class="text-white text-xl md:text-2xl font-bold mb-4">🌲 Fire Weather Index Prediction (Regression Model)</h2>
+                <form action="{{ url_for('predictR')}}" method="POST" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="Temperature1" class="text-white/90 text-sm font-medium">Temperature (°C)</label>
+                            <input type="text" id="Temperature1" name="Temperature" placeholder="e.g. 25" class="mt-1 w-full rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        </div>
+                        <div>
+                            <label for="Wind_speed" class="text-white/90 text-sm font-medium">Wind Speed (km/h)</label>
+                            <input type="text" id="Wind_speed" name="Wind_speed" placeholder="e.g. 10" class="mt-1 w-full rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        </div>
+                        <div>
+                            <label for="FFMC1" class="text-white/90 text-sm font-medium">Fuel Moisture Code (FFMC)</label>
+                            <input type="text" id="FFMC1" name="FFMC" placeholder="e.g. 85" class="mt-1 w-full rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        </div>
+                        <div>
+                            <label for="DMC1" class="text-white/90 text-sm font-medium">Duff Moisture Code (DMC)</label>
+                            <input type="text" id="DMC1" name="DMC1" placeholder="e.g. 26" class="mt-1 w-full rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="ISI1" class="text-white/90 text-sm font-medium">Initial Spread Index (ISI)</label>
+                            <input type="text" id="ISI1" name="ISI1" placeholder="e.g. 7" class="mt-1 w-full rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <button type="submit" class="w-full md:w-1/2 mx-auto block bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition">Predict</button>
+                    </div>
+                </form>
+                {% if prediction_text2 %}
+                <div class="mt-4 rounded-md px-4 py-3 text-center font-semibold {% if 'High' in prediction_text2 %}bg-red-500/20 text-red-300 border border-red-400/40{% else %}bg-green-500/20 text-green-300 border border-green-400/40{% endif %}">{{ prediction_text2 }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <nav class="top-nav" id="home">
+        <div class="nav-inner">
+            <div class="brand">ALGERIAN FOREST FIRE PREDICTION</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About Project</a></li>
+                <li><a href="#models">Models</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li class="icons">
+                    <a href="https://github.com/aravind9722" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static',filename='images/Github.png') }}" alt="GitHub" /></a>
+                    <a href="https://www.linkedin.com/in/aravind-selvam/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static',filename='images/linkedin.png') }}" alt="LinkedIn" /></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main" style="display:none">
+        
+        <div class="header">
+            <img src="{{ url_for('static', filename = 'images/header-text.png')}}" alt="">
+            <h1>ALGERIAN FOREST FIRE PREDICTION</h1>
+            <img src="{{ url_for('static', filename = 'images/dots.png')}}" alt="">
+        </div>
+        <h2>Project by Aravind S
+        	<div class="contact-details" >
+				<a href="https://github.com/aravind9722" rel="noopener noreferrer"
+					target="_blank"
+				>
+					<img src="{{ url_for('static',filename='images/Github.png') }}" />
+				</a>
+                <a href="https://www.linkedin.com/in/aravind-selvam/" rel="noopener noreferrer"
+                   target="_blank"
+				>
+					<img src="{{ url_for('static',filename='images/linkedin.png') }}" />
+				</a>
+			</div>
+        </h2>
+        <section class="container" id="models">
+            <div class="model-card">
+                <h3>Fire Prediction (Classification Model)</h3>
+                <form action="{{ url_for('predict')}}" id="booking-form" class="booking-form" method="POST">
+                    <div class="form-grid">
+                        <div class="inputs">
+                            <label for="Temperature">Enter Temperature (°C)
+                                <span class="info" title="Air temperature near the surface.">ℹ</span>
+                            </label>
+                            <input type="number" id="Temperature" name="Temperature" placeholder="e.g. 25" />
+                            <label for="Ws">Enter Wind Speed (km/h)
+                                <span class="info" title="Average wind speed affecting spread.">ℹ</span>
+                            </label>
+                            <input type="number" id="Ws" name="Ws" placeholder="e.g. 10" />
+                            <label for="FFMC">Enter Fuel Moisture Code
+                                <span class="info" title="FFMC: Fine Fuel Moisture Code — moisture content of surface litter.">ℹ</span>
+                            </label>
+                            <input type="number" id="FFMC" name="FFMC" placeholder="e.g. 85" />
+                            <label for="DMC">Enter Duff Moisture Code
+                                <span class="info" title="DMC: Moisture content of loosely compacted organic layers.">ℹ</span>
+                            </label>
+                            <input type="number" id="DMC" name="DMC" placeholder="e.g. 26" />
+                            <label for="ISI">Enter Initial Spread Index
+                                <span class="info" title="ISI: Combines wind and FFMC to estimate spread rate.">ℹ</span>
+                            </label>
+                            <input type="number" id="ISI" name="ISI" placeholder="e.g. 7" />
+                        </div>
+                        <div class="action">
+                            <button type="submit" id="submit" class="submit large">Predict</button>
+                        </div>
+                    </div>
+                </form>
+                {% if prediction_text1 %}
+                <div class="result-box {% if 'Safe' in prediction_text1 %}safe{% elif 'Danger' in prediction_text1 %}danger{% endif %}" id="cls-result" data-cls="{{ prediction_text1 }}">
+                    {{ prediction_text1 }}
+                </div>
+                <div class="viz-wrap">
+                    <canvas id="riskGauge" width="280" height="140"></canvas>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="model-card">
+                <h3>Fire Weather Index Prediction (Regression Model)</h3>
+                <form action="{{ url_for('predictR')}}" id="Reg_form" class="booking-form" method="POST">
+                    <div class="form-grid">
+                        <div class="inputs">
+                            <label for="Temperature1">Enter Temperature (°C)</label>
+                            <input type="text" id="Temperature1" name="Temperature" placeholder="e.g. 25" />
+                            <label for="Wind_speed">Enter Wind Speed (km/h)</label>
+                            <input type="text" id="Wind_speed" name="Wind_speed" placeholder="e.g. 10" />
+                            <label for="FFMC1">Enter Fuel Moisture Code</label>
+                            <input type="text" id="FFMC1" name="FFMC" placeholder="e.g. 85" />
+                            <label for="DMC1">Enter Duff Moisture Code</label>
+                            <input type="text" id="DMC1" name="DMC1" placeholder="e.g. 26" />
+                            <label for="ISI1">Enter Initial Spread Index</label>
+                            <input type="text" id="ISI1" name="ISI1" placeholder="e.g. 7" />
+                        </div>
+                        <div class="action">
+                            <button type="submit" id="submitR" class="submit large">Predict</button>
+                        </div>
+                    </div>
+                </form>
+                {% if prediction_text2 %}
+                <div class="result-box neutral" id="reg-result" data-reg="{{ prediction_text2 }}">
+                    {{ prediction_text2 }}
+                </div>
+                <div id="map" style="height:300px; border-radius:8px; margin-top:12px"></div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section id="about" class="container">
+            <div class="model-card">
+                <h3>About Project</h3>
+                <p style="margin-top:10px; text-align:center; opacity:.9">This app predicts the chance of a forest fire (classification) and the Fire Weather Index (regression) based on weather-derived indices such as Temperature, Wind Speed, FFMC, DMC and ISI. Models are built with scikit‑learn and XGBoost.</p>
+                <ul style="margin-top:14px; opacity:.9">
+                    <li>• Input features: Temperature, Wind Speed, FFMC, DMC, ISI</li>
+                    <li>• Outputs: Fire Risk (0/1) and FWI value</li>
+                    <li>• Stack: Flask, scikit‑learn, pandas, numpy</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="contact" class="container">
+            <div class="model-card" style="text-align:center">
+                <h3>Contact</h3>
+                <p style="margin-top:10px; opacity:.9">For questions and feedback:</p>
+                <p style="margin-top:6px"><a href="mailto:aravind9722@gmail.com" style="color:#fff; text-decoration:underline">Email</a></p>
+                <div style="margin-top:10px">
+                    <a href="https://github.com/aravind9722" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static',filename='images/Github.png') }}" alt="GitHub" style="width:26px; height:26px; margin-right:8px"/></a>
+                    <a href="https://www.linkedin.com/in/aravind-selvam/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static',filename='images/linkedin.png') }}" alt="LinkedIn" style="width:26px; height:26px"/></a>
+                </div>
+            </div>
+        </section>
+
+        <div class="loading-overlay" id="loading" hidden>
+            <div class="spinner"></div>
+            <div class="loading-text">Analyzing data...</div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script>
+            (function() {
+                const loading = document.getElementById('loading');
+                const clsForm = document.getElementById('booking-form');
+                const regForm = document.getElementById('Reg_form');
+                function attachLoading(form){
+                    if(!form) return;
+                    form.addEventListener('submit', function(){
+                        if (loading) { loading.hidden = false; }
+                    });
+                }
+                attachLoading(clsForm);
+                attachLoading(regForm);
+
+                // Risk gauge if classification result exists
+                const clsBox = document.getElementById('cls-result');
+                if (clsBox) {
+                    const text = clsBox.dataset.cls || '';
+                    let risk = /Danger/i.test(text) ? 85 : 15;
+                    const ctx = document.getElementById('riskGauge');
+                    if (ctx && window.Chart) {
+                        new Chart(ctx, {
+                            type: 'doughnut',
+                            data: { datasets: [{ data: [risk, 100 - risk], backgroundColor: ['#dc3545', 'rgba(255,255,255,0.1)'], borderWidth: 0 }]},
+                            options: { cutout: '70%', plugins: { legend: { display: false }}} 
+                        });
+                    }
+                }
+
+                // Map if regression result exists
+                const regBox = document.getElementById('reg-result');
+                if (regBox && window.L) {
+                    const map = L.map('map');
+                    // Default view Algeria
+                    map.setView([36.7525, 3.04197], 5);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+                    L.marker([36.7525, 3.04197]).addTo(map).bindPopup('Predicted area (demo)').openPopup();
+                }
+            })();
+        </script>
+
+    </div>
+</body>
+</html>

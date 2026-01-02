@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forest Fire Prediction – Landing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div class="min-h-screen w-full bg-cover bg-center relative" style="background-image:url('{{ url_for('static', filename='images/form-img.jpg') }}')">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-orange-600/30 via-transparent to-black/40"></div>
+
+    <header class="relative z-10 max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+      <h1 class="text-white font-extrabold text-2xl tracking-wide">Forest fire prediction using satellite data</h1>
+      <nav class="hidden md:flex items-center space-x-6 text-white font-semibold">
+        <a href="#about" class="hover:text-orange-400">About</a>
+        <a href="#features" class="hover:text-orange-400">Features</a>
+        <a href="#contact" class="hover:text-orange-400">Contact</a>
+      </nav>
+    </header>
+
+    <main class="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-24 text-center">
+      <h2 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Predict Fire Risk with Confidence</h2>
+      <p class="mt-4 text-white/90 text-lg md:text-xl">Forecast forest fire likelihood and Fire Weather Index using weather-derived indicators. Fast, intuitive, and visually insightful.</p>
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/dashboard" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-lg shadow transition">Get Started</a>
+        <a href="#about" class="inline-block bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3 rounded-lg border border-white/30 transition">Learn More</a>
+      </div>
+
+      <section id="features" class="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="rounded-xl bg-white/10 backdrop-blur p-5 border border-white/20 text-left">
+          <h3 class="text-white font-bold mb-2">Accurate Models</h3>
+          <p class="text-white/80">Classification for fire risk and regression for FWI using scikit‑learn.</p>
+        </div>
+        <div class="rounded-xl bg-white/10 backdrop-blur p-5 border border-white/20 text-left">
+          <h3 class="text-white font-bold mb-2">Simple Inputs</h3>
+          <p class="text-white/80">Provide Temperature, Wind Speed, FFMC, DMC, and ISI to get predictions.</p>
+        </div>
+        <div class="rounded-xl bg-white/10 backdrop-blur p-5 border border-white/20 text-left">
+          <h3 class="text-white font-bold mb-2">Clear Results</h3>
+          <p class="text-white/80">Color‑coded outcomes, charts, and optional map context.</p>
+        </div>
+      </section>
+
+      <section id="about" class="mt-12 max-w-3xl mx-auto text-white/90">
+        <p>Built with Flask and modern ML libraries, this tool helps surface potential fire hazards quickly so you can act decisively.</p>
+      </section>
+
+      <section id="contact" class="mt-10 text-white/80">
+        <p>Questions? <a class="underline" href="mailto:aravind9722@gmail.com">Contact us</a>.</p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
